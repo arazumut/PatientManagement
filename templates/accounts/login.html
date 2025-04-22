@@ -1,171 +1,328 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giriş Yap - MediCare</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <style>
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f1f5f9;
-            height: 100vh;
-        }
-        
-        .login-container {
-            max-width: 400px;
-            width: 100%;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .login-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-        }
-        
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background-color: var(--primary);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            margin-right: 0.75rem;
-        }
-        
-        .logo-text {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--dark);
-        }
-        
-        .login-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 0.5rem;
-        }
-        
-        .login-subtitle {
-            color: var(--gray-dark);
-            font-size: 0.875rem;
-        }
-        
-        .login-btn {
-            width: 100%;
-            padding: 0.8rem;
-            border: none;
-            border-radius: 10px;
-            background-color: var(--primary);
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
-        }
-        
-        .login-btn:hover {
-            background-color: var(--primary-light);
-            box-shadow: 0 6px 10px -1px rgba(99, 102, 241, 0.3);
-            transform: translateY(-1px);
-        }
-        
-        .login-footer {
-            margin-top: 2rem;
-            text-align: center;
-            font-size: 0.875rem;
-            color: var(--gray-dark);
-        }
-        
-        .login-footer a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .login-footer a:hover {
-            text-decoration: underline;
-        }
-        
-        .error-message {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-            padding: 0.75rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            font-size: 0.875rem;
-            border-left: 3px solid var(--danger);
-            display: flex;
-            align-items: center;
-        }
-        
-        .error-message:before {
-            content: "⚠️";
-            margin-right: 0.5rem;
-            font-size: 1.2rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="login-container">
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Giriş Yap - MediCare{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
         <div class="login-header">
             <div class="logo">
                 <div class="logo-icon">
                     <i class="fas fa-hospital"></i>
                 </div>
-                <div class="logo-text">MediCare</div>
+                <span class="logo-text">MediCare</span>
             </div>
-            <h1 class="login-title">Hoş Geldiniz</h1>
-            <p class="login-subtitle">Lütfen hesabınıza giriş yapın</p>
+            <h1 class="login-title">Giriş Yap</h1>
+            <p class="login-subtitle">Hesabınıza giriş yaparak devam edin</p>
         </div>
         
         {% if messages %}
-        {% for message in messages %}
-        <div class="error-message">
-            {{ message }}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
         {% endif %}
         
-        <form method="post" action="{% url 'login' %}">
-            {% csrf_token %}
-            <div class="form-group input-with-icon">
-                <label for="username" class="form-label">Kullanıcı Adı</label>
-                <input type="text" id="username" name="username" class="form-control" placeholder="Kullanıcı adınızı girin" required>
-                <i class="fas fa-user"></i>
-            </div>
-            
-            <div class="form-group input-with-icon">
-                <label for="password" class="form-label">Şifre</label>
-                <input type="password" id="password" name="password" class="form-control" placeholder="Şifrenizi girin" required>
-                <i class="fas fa-lock"></i>
-            </div>
-            
-            <button type="submit" class="login-btn">Giriş Yap</button>
-        </form>
-        
-        <div class="login-footer">
-            <p>Hesabınız yok mu? <a href="{% url 'register' %}">Kayıt olun</a></p>
-            <p style="margin-top: 0.5rem;"><a href="{% url 'password_reset' %}">Şifremi unuttum</a></p>
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <p><strong>Giriş başarısız!</strong> Lütfen doğru kullanıcı adı ve parola girdiğinizden emin olun.</p>
         </div>
+        {% endif %}
+        
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_username" class="form-label">Kullanıcı Adı</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-user"></i>
+                    {{ form.username }}
+                </div>
+                {% if form.username.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.username.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_password" class="form-label">Parola</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    {{ form.password }}
+                </div>
+                {% if form.password.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.password.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="login-options">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="remember-me">
+                    <label class="form-check-label" for="remember-me">Beni hatırla</label>
+                </div>
+                <a href="{% url 'password_reset' %}" class="forgot-password">Parolamı unuttum</a>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-login">
+                <i class="fas fa-sign-in-alt me-2"></i> Giriş Yap
+            </button>
+            
+            <div class="login-footer">
+                <p>Hesabınız yok mu? <a href="{% url 'register' %}" class="register-link">Kayıt Ol</a></p>
+                <a href="{% url 'home' %}" class="back-home">
+                    <i class="fas fa-arrow-left me-1"></i> Ana Sayfaya Dön
+                </a>
+            </div>
+        </form>
     </div>
-</body>
-</html> 
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+    
+    .login-container {
+        width: 100%;
+        max-width: 450px;
+        padding: 1rem;
+    }
+    
+    .login-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .logo-icon {
+        width: 36px;
+        height: 36px;
+        background-color: #4f46e5;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.25rem;
+    }
+    
+    .logo-text {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+    
+    .login-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.5rem;
+    }
+    
+    .login-subtitle {
+        color: #64748b;
+        font-size: 0.95rem;
+    }
+    
+    .login-form {
+        margin-top: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: #1e293b;
+    }
+    
+    .input-with-icon {
+        position: relative;
+    }
+    
+    .input-with-icon i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+    
+    .input-with-icon input {
+        padding-left: 2.5rem;
+        width: 100%;
+        height: 3rem;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        outline: none;
+    }
+    
+    .input-with-icon input:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+    
+    .login-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-check {
+        display: flex;
+        align-items: center;
+    }
+    
+    .form-check-input {
+        margin-right: 0.5rem;
+    }
+    
+    .form-check-label {
+        font-size: 0.9rem;
+        color: #64748b;
+    }
+    
+    .forgot-password {
+        color: #4f46e5;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .forgot-password:hover {
+        text-decoration: underline;
+    }
+    
+    .btn-login {
+        width: 100%;
+        height: 3rem;
+        font-weight: 500;
+        font-size: 1rem;
+        border-radius: 8px;
+        background-color: #4f46e5;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-login:hover {
+        background-color: #4338ca;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+    }
+    
+    .login-footer {
+        margin-top: 2rem;
+        text-align: center;
+        color: #64748b;
+        font-size: 0.95rem;
+    }
+    
+    .register-link {
+        color: #4f46e5;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .register-link:hover {
+        text-decoration: underline;
+    }
+    
+    .back-home {
+        display: block;
+        margin-top: 1rem;
+        color: #64748b;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .back-home:hover {
+        color: #4f46e5;
+    }
+    
+    .alert {
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        font-size: 0.95rem;
+    }
+    
+    .alert-danger {
+        background-color: #fee2e2;
+        color: #b91c1c;
+    }
+    
+    .alert-success {
+        background-color: #d1fae5;
+        color: #047857;
+    }
+    
+    .alert-info {
+        background-color: #e0f2fe;
+        color: #0369a1;
+    }
+    
+    @media (max-width: 576px) {
+        .login-card {
+            padding: 1.5rem;
+        }
+        
+        .login-title {
+            font-size: 1.5rem;
+        }
+        
+        .login-options {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+    }
+</style>
+{% endblock %} 

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Count
+from django.contrib.auth import logout
 from .models import UserProfile, DoctorProfile, PatientProfile
 from .forms import UserRegistrationForm, UserProfileForm, DoctorProfileForm, PatientProfileForm
 from appointments.models import Appointment
@@ -303,3 +304,13 @@ def create_doctor_profile(request):
         form = DoctorProfileForm()
     
     return render(request, 'accounts/doctor_profile_form.html', {'form': form})
+
+def home(request):
+    """Ana sayfayı gösterir"""
+    return render(request, 'home.html')
+
+def logout_view(request):
+    """Kullanıcı çıkış view'i"""
+    logout(request)
+    messages.success(request, "Başarıyla çıkış yaptınız.")
+    return redirect('home')

@@ -3,10 +3,13 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
+    # Ana Sayfa
+    path('', views.home, name='home'),
+    
     # Giriş ve Kayıt URL'leri
-    path('', views.dashboard, name='dashboard'),
+    path('dashboard/', views.dashboard, name='dashboard'),
     path('giris/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
-    path('cikis/', auth_views.LogoutView.as_view(template_name='accounts/logout.html', http_method_names=['get', 'post']), name='logout'),
+    path('cikis/', views.logout_view, name='logout'),
     path('kayit/', views.register, name='register'),
     
     # Profil Yönetimi

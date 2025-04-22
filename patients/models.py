@@ -14,18 +14,19 @@ class MedicalRecord(models.Model):
 
 class Prescription(models.Model):
     medical_record = models.ForeignKey(MedicalRecord, on_delete=models.CASCADE, related_name='prescriptions')
-    prescription_number = models.CharField(max_length=20, unique=True)
-    date_prescribed = models.DateTimeField(default=timezone.now)
+    prescription_number = models.CharField(max_length=50, unique=True)
+    notes = models.TextField(blank=True, null=True)
+    date_prescribed = models.DateField(default=timezone.now)
     
     def __str__(self):
         return f"Reçete #{self.prescription_number} - {self.medical_record.patient}"
 
 class Medication(models.Model):
     prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE, related_name='medications')
-    name = models.CharField(max_length=255)
-    dosage = models.CharField(max_length=100)
-    frequency = models.CharField(max_length=100)
-    duration = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    dosage = models.CharField(max_length=50)
+    frequency = models.CharField(max_length=50)
+    duration = models.CharField(max_length=50)
     instructions = models.TextField(blank=True, null=True)
     
     def __str__(self):

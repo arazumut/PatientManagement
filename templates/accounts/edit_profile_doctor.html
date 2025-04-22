@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profil Düzenle - Doktor{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Profil Menüsü</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-circle me-2"></i> Profilim
+                    </a>
+                    <a href="{% url 'edit_profile' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-edit me-2"></i> Profil Düzenle
+                    </a>
+                    <a href="{% url 'appointment_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-calendar-check me-2"></i> Randevularım
+                    </a>
+                    <a href="{% url 'patient_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-injured me-2"></i> Hastalarım
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Profil Bilgilerini Düzenle</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="border-bottom pb-2">Kişisel Bilgiler</h5>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="id_phone" class="form-label">Telefon</label>
+                                    {{ user_form.phone }}
+                                    {% if user_form.phone.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in user_form.phone.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="id_birth_date" class="form-label">Doğum Tarihi</label>
+                                    {{ user_form.birth_date }}
+                                    {% if user_form.birth_date.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in user_form.birth_date.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_profile_picture" class="form-label">Profil Resmi</label>
+                                    {{ user_form.profile_picture }}
+                                    {% if user_form.profile_picture.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in user_form.profile_picture.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_address" class="form-label">Adres</label>
+                                    {{ user_form.address }}
+                                    {% if user_form.address.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in user_form.address.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4 mt-4">
+                            <div class="col-12">
+                                <h5 class="border-bottom pb-2">Doktor Bilgileri</h5>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="id_specialty" class="form-label">Uzmanlık Alanı</label>
+                                    {{ doctor_form.specialty }}
+                                    {% if doctor_form.specialty.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in doctor_form.specialty.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="id_license_number" class="form-label">Lisans/Diploma Numarası</label>
+                                    {{ doctor_form.license_number }}
+                                    {% if doctor_form.license_number.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in doctor_form.license_number.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="id_experience_years" class="form-label">Deneyim (Yıl)</label>
+                                    {{ doctor_form.experience_years }}
+                                    {% if doctor_form.experience_years.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in doctor_form.experience_years.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_about" class="form-label">Hakkında</label>
+                                    {{ doctor_form.about }}
+                                    {% if doctor_form.about.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in doctor_form.about.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 d-flex justify-content-end">
+                            <a href="{% url 'profile' %}" class="btn btn-secondary me-2">
+                                <i class="fas fa-times me-1"></i> İptal
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Kaydet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

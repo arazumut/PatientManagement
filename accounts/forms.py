@@ -12,15 +12,40 @@ class UserRegistrationForm(UserCreationForm):
         ('patient', 'Hasta'),
     )
     
-    email = forms.EmailField(required=True, label='E-posta')
-    first_name = forms.CharField(required=True, label='Ad')
-    last_name = forms.CharField(required=True, label='Soyad')
-    user_type = forms.ChoiceField(choices=USER_TYPE_CHOICES, label='Kullanıcı Tipi')
+    first_name = forms.CharField(
+        max_length=30, 
+        required=True, 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    last_name = forms.CharField(
+        max_length=30, 
+        required=True, 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    email = forms.EmailField(
+        max_length=254, 
+        required=True, 
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+    user_type = forms.ChoiceField(
+        choices=USER_TYPE_CHOICES, 
+        required=True, 
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
     
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'user_type']
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'user_type')
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+        }
     
+    def __init__(self, *args, **kwargs):
+        super(UserRegistrationForm, self).__init__(*args, **kwargs)
+        # Adding form control classes to default fields
+        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
@@ -28,38 +53,27 @@ class UserRegistrationForm(UserCreationForm):
         return email
 
 class UserProfileForm(forms.ModelForm):
-    """Kullanıcı profil düzenleme formu"""
-    first_name = forms.CharField(required=True, label='Ad')
-    last_name = forms.CharField(required=True, label='Soyad')
-    email = forms.EmailField(required=True, label='E-posta')
+    """Kullanıcı profil bilgileri formu"""
+    
+    birth_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        label='Doğum Tarihi'
+    )
     
     class Meta:
         model = UserProfile
-        fields = ['phone_number', 'address', 'profile_picture']
+        fields = ['phone', 'birth_date', 'profile_picture', 'address']
         labels = {
-            'phone_number': 'Telefon Numarası',
+            'phone': 'Telefon',
+            'profile_picture': 'Profil Resmi',
             'address': 'Adres',
-            'profile_picture': 'Profil Fotoğrafı',
         }
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.instance and self.instance.user:
-            self.fields['first_name'].initial = self.instance.user.first_name
-            self.fields['last_name'].initial = self.instance.user.last_name
-            self.fields['email'].initial = self.instance.user.email
-    
-    def save(self, commit=True):
-        profile = super().save(commit=False)
-        profile.user.first_name = self.cleaned_data['first_name']
-        profile.user.last_name = self.cleaned_data['last_name']
-        profile.user.email = self.cleaned_data['email']
-        profile.user.save()
-        
-        if commit:
-            profile.save()
-        
-        return profile
+        widgets = {
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'profile_picture': forms.FileInput(attrs={'class': 'form-control'}),
+        }
 
 class DoctorProfileForm(forms.ModelForm):
     """Doktor profil bilgileri formu"""
@@ -72,24 +86,47 @@ class DoctorProfileForm(forms.ModelForm):
             'about': 'Hakkında',
             'experience_years': 'Deneyim (Yıl)',
         }
+        widgets = {
+            'specialty': forms.Select(attrs={'class': 'form-select'}),
+            'license_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'about': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'experience_years': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+        }
 
 class PatientProfileForm(forms.ModelForm):
     """Hasta profil bilgileri formu"""
+    GENDER_CHOICES = (
+        ('male', 'Erkek'),
+        ('female', 'Kadın'),
+        ('other', 'Diğer'),
+    )
+    
+    gender = forms.ChoiceField(
+        choices=GENDER_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label='Cinsiyet'
+    )
+    
     class Meta:
         model = PatientProfile
-        fields = ['tc_number', 'date_of_birth', 'blood_group', 'allergies', 
-                  'chronic_diseases', 'emergency_contact_name', 'emergency_contact_phone']
+        fields = ['tc_number', 'date_of_birth', 'gender', 'blood_group', 'allergies', 'chronic_diseases', 'emergency_contact_name', 'emergency_contact_phone']
         labels = {
-            'tc_number': 'T.C. Kimlik Numarası',
+            'tc_number': 'T.C. Kimlik No',
             'date_of_birth': 'Doğum Tarihi',
             'blood_group': 'Kan Grubu',
             'allergies': 'Alerjiler',
             'chronic_diseases': 'Kronik Hastalıklar',
-            'emergency_contact_name': 'Acil Durum Kişisi',
-            'emergency_contact_phone': 'Acil Durum Telefonu',
+            'emergency_contact_name': 'Acil Durumda İrtibat Kişisi',
+            'emergency_contact_phone': 'Acil Durumda İrtibat Telefonu',
         }
         widgets = {
-            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+            'tc_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'blood_group': forms.Select(attrs={'class': 'form-select'}),
+            'allergies': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'chronic_diseases': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'emergency_contact_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'emergency_contact_phone': forms.TextInput(attrs={'class': 'form-control'}),
         }
     
     def clean_tc_number(self):

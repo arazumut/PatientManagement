@@ -13,7 +13,9 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     user_type = models.CharField(max_length=10, choices=USER_TYPES, default='patient')
     profile_picture = models.ImageField(upload_to='profile_pics', null=True, blank=True)
+    phone = models.CharField(max_length=15, blank=True, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
+    birth_date = models.DateField(null=True, blank=True)
     address = models.TextField(blank=True, null=True)
     
     def __str__(self):
@@ -59,9 +61,16 @@ class PatientProfile(models.Model):
         ('0-', '0 Rh-'),
     )
     
+    GENDER_CHOICES = (
+        ('male', 'Erkek'),
+        ('female', 'Kadın'),
+        ('other', 'Diğer'),
+    )
+    
     user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='patient_profile')
     tc_number = models.CharField(max_length=11, unique=True)
     date_of_birth = models.DateField()
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='other')
     blood_group = models.CharField(max_length=3, choices=BLOOD_GROUPS, blank=True, null=True)
     allergies = models.TextField(blank=True, null=True)
     chronic_diseases = models.TextField(blank=True, null=True)
