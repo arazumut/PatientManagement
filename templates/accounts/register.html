@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol - MediCare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f1f5f9;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .register-container {
+            max-width: 500px;
+            width: 100%;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            margin: 2rem auto;
+        }
+        
+        .register-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background-color: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 0.75rem;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .register-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .register-subtitle {
+            color: var(--gray-dark);
+            font-size: 0.875rem;
+        }
+        
+        .register-btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+        }
+        
+        .register-btn:hover {
+            background-color: var(--primary-light);
+            box-shadow: 0 6px 10px -1px rgba(99, 102, 241, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .register-footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--gray-dark);
+        }
+        
+        .register-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .register-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            border-left: 3px solid var(--danger);
+            display: flex;
+            align-items: center;
+        }
+        
+        .error-message:before {
+            content: "⚠️";
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .helptext {
+            font-size: 0.75rem;
+            color: var(--gray-dark);
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        .errorlist {
+            color: var(--danger);
+            font-size: 0.75rem;
+            list-style: none;
+            padding: 0;
+            margin: 0.25rem 0 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-hospital"></i>
+                </div>
+                <div class="logo-text">MediCare</div>
+            </div>
+            <h1 class="register-title">Kayıt Ol</h1>
+            <p class="register-subtitle">Hasta yönetim sistemimize hoş geldiniz</p>
+        </div>
+        
+        {% if messages %}
+        {% for message in messages %}
+        <div class="error-message">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        
+        <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <div class="form-group input-with-icon">
+                    <label for="{{ form.first_name.id_for_label }}" class="form-label">Ad</label>
+                    {{ form.first_name }}
+                    <i class="fas fa-user"></i>
+                    {% if form.first_name.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.first_name.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group input-with-icon">
+                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Soyad</label>
+                    {{ form.last_name }}
+                    <i class="fas fa-user"></i>
+                    {% if form.last_name.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.last_name.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group input-with-icon">
+                <label for="{{ form.username.id_for_label }}" class="form-label">Kullanıcı Adı</label>
+                {{ form.username }}
+                <i class="fas fa-at"></i>
+                {% if form.username.errors %}
+                <ul class="errorlist">
+                    {% for error in form.username.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group input-with-icon">
+                <label for="{{ form.email.id_for_label }}" class="form-label">E-posta</label>
+                {{ form.email }}
+                <i class="fas fa-envelope"></i>
+                {% if form.email.errors %}
+                <ul class="errorlist">
+                    {% for error in form.email.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.user_type.id_for_label }}" class="form-label">Hesap Tipi</label>
+                {{ form.user_type }}
+                {% if form.user_type.errors %}
+                <ul class="errorlist">
+                    {% for error in form.user_type.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group input-with-icon">
+                <label for="{{ form.password1.id_for_label }}" class="form-label">Şifre</label>
+                {{ form.password1 }}
+                <i class="fas fa-lock"></i>
+                {% if form.password1.errors %}
+                <ul class="errorlist">
+                    {% for error in form.password1.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% if form.password1.help_text %}
+                <span class="helptext">{{ form.password1.help_text }}</span>
+                {% endif %}
+            </div>
+            
+            <div class="form-group input-with-icon">
+                <label for="{{ form.password2.id_for_label }}" class="form-label">Şifre (Tekrar)</label>
+                {{ form.password2 }}
+                <i class="fas fa-lock"></i>
+                {% if form.password2.errors %}
+                <ul class="errorlist">
+                    {% for error in form.password2.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="register-btn">Kayıt Ol</button>
+        </form>
+        
+        <div class="register-footer">
+            <p>Zaten bir hesabınız var mı? <a href="{% url 'login' %}">Giriş yapın</a></p>
+        </div>
+    </div>
+</body>
+</html> 

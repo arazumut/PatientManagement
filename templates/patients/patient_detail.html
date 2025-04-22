@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ patient.get_full_name }} - MediCare{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+            <h1 class="welcome-title">Hasta Bilgileri</h1>
+            <p class="welcome-subtitle">{{ patient.get_full_name }} detaylı hasta bilgileri</p>
+        </div>
+        
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'patient_update' patient.id %}" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Düzenle
+            </a>
+            <a href="{% url 'patient_list' %}" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Geri
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="activity-grid">
+    <!-- Hasta Bilgileri -->
+    <div class="appointments-card">
+        <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+            <div class="patient-avatar" style="width: 60px; height: 60px; margin-right: 1rem;">
+                {{ patient.first_name.0 }}{{ patient.last_name.0 }}
+            </div>
+            <div>
+                <h2 style="font-size: 1.5rem; margin-bottom: 0.25rem;">{{ patient.get_full_name }}</h2>
+                <p style="color: var(--gray-dark); margin-bottom: 0;">
+                    Hasta ID: #{{ patient.id }} | 
+                    <span class="appointment-status {% if patient.is_active %}status-confirmed{% else %}status-cancelled{% endif %}">
+                        {% if patient.is_active %}Aktif{% else %}Pasif{% endif %}
+                    </span>
+                </p>
+            </div>
+        </div>
+        
+        <div class="table-card" style="box-shadow: none; padding: 0;">
+            <table style="width: 100%;">
+                <tr>
+                    <th style="width: 200px; padding: 10px 15px;">Telefon:</th>
+                    <td style="padding: 10px 15px;">{{ patient.phone }}</td>
+                </tr>
+                <tr>
+                    <th style="padding: 10px 15px;">E-posta:</th>
+                    <td style="padding: 10px 15px;">{{ patient.email|default:"-" }}</td>
+                </tr>
+                <tr>
+                    <th style="padding: 10px 15px;">Cinsiyet:</th>
+                    <td style="padding: 10px 15px;">{{ patient.get_gender_display }}</td>
+                </tr>
+                <tr>
+                    <th style="padding: 10px 15px;">Doğum Tarihi:</th>
+                    <td style="padding: 10px 15px;">{{ patient.birth_date|date:"d.m.Y" }}</td>
+                </tr>
+                <tr>
+                    <th style="padding: 10px 15px;">Yaş:</th>
+                    <td style="padding: 10px 15px;">{{ patient.age }} yaşında</td>
+                </tr>
+                <tr>
+                    <th style="padding: 10px 15px;">Kan Grubu:</th>
+                    <td style="padding: 10px 15px;">{{ patient.blood_group|default:"-" }}</td>
+                </tr>
+                <tr>
+                    <th style="padding: 10px 15px;">Adres:</th>
+                    <td style="padding: 10px 15px;">{{ patient.address|default:"-" }}</td>
+                </tr>
+                <tr>
+                    <th style="padding: 10px 15px;">Kayıt Tarihi:</th>
+                    <td style="padding: 10px 15px;">{{ patient.created_at|date:"d.m.Y H:i" }}</td>
+                </tr>
+                <tr>
+                    <th style="padding: 10px 15px;">Son Güncelleme:</th>
+                    <td style="padding: 10px 15px;">{{ patient.updated_at|date:"d.m.Y H:i" }}</td>
+                </tr>
+                <tr>
+                    <th style="padding: 10px 15px;">Son Ziyaret:</th>
+                    <td style="padding: 10px 15px;">{{ patient.last_visit|date:"d.m.Y"|default:"-" }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Notlar</h3>
+        <div style="background-color: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+            {{ patient.notes|linebreaks|default:"Hasta hakkında not bulunmuyor." }}
+        </div>
+    </div>
+    
+    <!-- Hasta Randevuları -->
+    <div class="patients-card">
+        <div class="patients-header">
+            <h3>Randevu Geçmişi</h3>
+            <a href="{% url 'appointment_create' %}?patient_id={{ patient.id }}" class="btn btn-primary" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;">
+                <i class="fas fa-plus"></i> Yeni Randevu
+            </a>
+        </div>
+        
+        <ul class="appointment-list">
+            {% for appointment in appointments %}
+            <li class="appointment-item">
+                <div class="appointment-info">
+                    <div class="appointment-patient">{{ appointment.get_appointment_type_display }}</div>
+                    <div class="appointment-time">
+                        <i class="fas fa-clock"></i>
+                        <span>{{ appointment.date|date:"d.m.Y" }} {{ appointment.start_time|date:"H:i" }} - {{ appointment.end_time|date:"H:i" }}</span>
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--gray-dark);">
+                        <i class="fas fa-user-md"></i> {{ appointment.doctor.get_full_name }}
+                    </div>
+                </div>
+                <div class="appointment-status status-{{ appointment.status|lower }}">{{ appointment.get_status_display }}</div>
+            </li>
+            {% empty %}
+            <li class="appointment-item">
+                <div class="appointment-info">
+                    <div class="appointment-patient">Randevu bulunamadı</div>
+                    <div class="appointment-time">
+                        <span>Bu hasta için henüz randevu kaydı bulunmuyor.</span>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        
+        {% if appointments %}
+        <div style="margin-top: 1rem; text-align: center;">
+            <a href="{% url 'appointments_by_patient' patient.id %}" class="view-all">Tüm Randevuları Görüntüle</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

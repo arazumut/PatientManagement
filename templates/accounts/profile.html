@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profil{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Profil Menüsü</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'profile' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-user-circle me-2"></i> Profilim
+                    </a>
+                    <a href="{% url 'edit_profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-edit me-2"></i> Profil Düzenle
+                    </a>
+                    <a href="{% url 'password_change' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-key me-2"></i> Parola Değiştir
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Kişisel Bilgiler</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-4">
+                            {% if user_profile.profile_picture %}
+                                <img src="{{ user_profile.profile_picture.url }}" alt="Profil Resmi" class="rounded-circle img-fluid" style="max-width: 120px;">
+                            {% else %}
+                                <img src="{% static 'images/default-profile.png' %}" alt="Profil Resmi" class="rounded-circle img-fluid" style="max-width: 120px;">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-9">
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted">Ad Soyad:</div>
+                                <div class="col-md-8">{{ user_profile.user.get_full_name }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted">E-posta:</div>
+                                <div class="col-md-8">{{ user_profile.user.email }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted">Telefon:</div>
+                                <div class="col-md-8">{{ user_profile.phone }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted">Doğum Tarihi:</div>
+                                <div class="col-md-8">{{ user_profile.birth_date|date:"d.m.Y" }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted">Hesap Türü:</div>
+                                <div class="col-md-8">{{ user_profile.get_user_type_display }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted">Kayıt Tarihi:</div>
+                                <div class="col-md-8">{{ user_profile.user.date_joined|date:"d.m.Y" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Sistem Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-4 text-muted">Son Giriş:</div>
+                        <div class="col-md-8">{{ user_profile.user.last_login|date:"d.m.Y H:i" }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 text-muted">Kullanıcı Adı:</div>
+                        <div class="col-md-8">{{ user_profile.user.username }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 mt-3">
+                            <a href="{% url 'edit_profile' %}" class="btn btn-primary">
+                                <i class="fas fa-edit me-1"></i> Profili Düzenle
+                            </a>
+                            <a href="{% url 'password_change' %}" class="btn btn-secondary ms-2">
+                                <i class="fas fa-key me-1"></i> Parola Değiştir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

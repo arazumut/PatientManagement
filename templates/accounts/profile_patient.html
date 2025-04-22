@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Hasta Profili{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Profil Menüsü</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'profile' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-user-circle me-2"></i> Profilim
+                    </a>
+                    <a href="{% url 'edit_profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-edit me-2"></i> Profil Düzenle
+                    </a>
+                    <a href="{% url 'appointment_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-calendar-check me-2"></i> Randevularım
+                    </a>
+                    <a href="{% url 'doctor_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-md me-2"></i> Doktorlar
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Kişisel Bilgiler</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-4">
+                            {% if user_profile.profile_picture %}
+                                <img src="{{ user_profile.profile_picture.url }}" alt="Profil Resmi" class="rounded-circle img-fluid" style="max-width: 120px;">
+                            {% else %}
+                                <img src="{% static 'images/default-profile.png' %}" alt="Profil Resmi" class="rounded-circle img-fluid" style="max-width: 120px;">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-9">
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted">Ad Soyad:</div>
+                                <div class="col-md-8">{{ user_profile.user.get_full_name }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted">E-posta:</div>
+                                <div class="col-md-8">{{ user_profile.user.email }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted">Telefon:</div>
+                                <div class="col-md-8">{{ user_profile.phone }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted">Doğum Tarihi:</div>
+                                <div class="col-md-8">{{ user_profile.birth_date|date:"d.m.Y" }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted">Hesap Türü:</div>
+                                <div class="col-md-8">{{ user_profile.get_user_type_display }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if patient_profile %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Hasta Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-4 text-muted">T.C. Kimlik No:</div>
+                        <div class="col-md-8">{{ patient_profile.tc_number }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 text-muted">Kan Grubu:</div>
+                        <div class="col-md-8">{{ patient_profile.get_blood_type_display }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 text-muted">Cinsiyet:</div>
+                        <div class="col-md-8">{{ patient_profile.get_gender_display }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 text-muted">Adres:</div>
+                        <div class="col-md-8">{{ patient_profile.address }}</div>
+                    </div>
+                    {% if patient_profile.allergies %}
+                    <div class="row mb-2">
+                        <div class="col-md-4 text-muted">Alerjiler:</div>
+                        <div class="col-md-8">{{ patient_profile.allergies }}</div>
+                    </div>
+                    {% endif %}
+                    {% if patient_profile.chronic_diseases %}
+                    <div class="row mb-2">
+                        <div class="col-md-4 text-muted">Kronik Hastalıklar:</div>
+                        <div class="col-md-8">{{ patient_profile.chronic_diseases }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if appointments %}
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Yaklaşan Randevular</h5>
+                    <a href="{% url 'appointment_list' %}" class="btn btn-sm btn-outline-primary">
+                        Tüm Randevular <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Doktor</th>
+                                    <th>Tarih</th>
+                                    <th>Saat</th>
+                                    <th>Sebep</th>
+                                    <th>Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for appointment in appointments %}
+                                <tr>
+                                    <td>Dr. {{ appointment.doctor.user_profile.user.get_full_name }}</td>
+                                    <td>{{ appointment.appointment_date|date:"d.m.Y" }}</td>
+                                    <td>{{ appointment.start_time }}</td>
+                                    <td>{{ appointment.reason|truncatechars:20 }}</td>
+                                    <td>
+                                        <span class="badge {% if appointment.status == 'pending' %}bg-warning{% elif appointment.status == 'confirmed' %}bg-success{% elif appointment.status == 'cancelled' %}bg-danger{% else %}bg-info{% endif %}">
+                                            {{ appointment.get_status_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

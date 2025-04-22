@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Doktoru Düzenle{% else %}Yeni Doktor Ekle{% endif %} - MediCare{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1 class="welcome-title">{% if form.instance.pk %}Doktoru Düzenle{% else %}Yeni Doktor Ekle{% endif %}</h1>
+    <p class="welcome-subtitle">{% if form.instance.pk %}Doktor bilgilerini güncelleyebilirsiniz.{% else %}Yeni bir doktor kaydı oluşturun.{% endif %}</p>
+</div>
+
+<div class="form-card">
+    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert" style="background-color: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <p><strong>Lütfen aşağıdaki hataları düzeltin:</strong></p>
+            <ul>
+                {% for field in form %}
+                    {% if field.errors %}
+                    <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_first_name" class="form-label">Ad *</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.help_text %}
+                    <div class="form-text">{{ form.first_name.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_last_name" class="form-label">Soyad *</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.help_text %}
+                    <div class="form-text">{{ form.last_name.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_email" class="form-label">E-posta</label>
+                    {{ form.email }}
+                    {% if form.email.help_text %}
+                    <div class="form-text">{{ form.email.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_phone" class="form-label">Telefon *</label>
+                    {{ form.phone }}
+                    {% if form.phone.help_text %}
+                    <div class="form-text">{{ form.phone.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_specialization" class="form-label">Uzmanlık Alanı *</label>
+                    {{ form.specialization }}
+                    {% if form.specialization.help_text %}
+                    <div class="form-text">{{ form.specialization.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_department" class="form-label">Departman</label>
+                    {{ form.department }}
+                    {% if form.department.help_text %}
+                    <div class="form-text">{{ form.department.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_license_number" class="form-label">Lisans Numarası</label>
+                    {{ form.license_number }}
+                    {% if form.license_number.help_text %}
+                    <div class="form-text">{{ form.license_number.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_is_active" class="form-label">Durum</label>
+                    <div>
+                        {{ form.is_active }}
+                        <label for="id_is_active" style="margin-left: 5px;">Aktif</label>
+                    </div>
+                    {% if form.is_active.help_text %}
+                    <div class="form-text">{{ form.is_active.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="id_address" class="form-label">Adres</label>
+            {{ form.address }}
+            {% if form.address.help_text %}
+            <div class="form-text">{{ form.address.help_text }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_biography" class="form-label">Biyografi</label>
+            {{ form.biography }}
+            {% if form.biography.help_text %}
+            <div class="form-text">{{ form.biography.help_text }}</div>
+            {% endif %}
+        </div>
+        
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-primary">
+                {% if form.instance.pk %}Güncelle{% else %}Kaydet{% endif %}
+            </button>
+            <a href="{% url 'doctor_list' %}" class="btn btn-outline">İptal</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Form validation
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set input classes
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.classList.add('form-control');
+            
+            // Make checkbox not 100% width
+            if (input.type === 'checkbox') {
+                input.style.width = 'auto';
+            }
+        });
+    });
+</script>
+{% endblock %} 

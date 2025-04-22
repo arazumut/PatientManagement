@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Randevular - MediCare{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1 class="welcome-title">Randevu Listesi</h1>
+    <p class="welcome-subtitle">Tüm randevuları görüntüleyebilir, filtreleyebilir ve yönetebilirsiniz.</p>
+</div>
+
+<div class="table-card">
+    <div class="table-header">
+        <h2 class="table-title">Randevular</h2>
+        
+        <div class="table-actions">
+            <form method="get" action="{% url 'appointment_list' %}" style="display: flex; gap: 10px;">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select name="status" class="form-control" style="width: 150px;">
+                        <option value="">Tüm Durumlar</option>
+                        <option value="confirmed" {% if request.GET.status == 'confirmed' %}selected{% endif %}>Onaylandı</option>
+                        <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Beklemede</option>
+                        <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>İptal Edildi</option>
+                        <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Tamamlandı</option>
+                    </select>
+                    
+                    <input type="date" name="date" class="form-control" value="{{ request.GET.date }}" style="width: 150px;">
+                    
+                    <button type="submit" class="btn btn-primary" style="padding: 0.5rem 0.75rem;">
+                        <i class="fas fa-filter"></i> Filtrele
+                    </button>
+                </div>
+            </form>
+            
+            <a href="{% url 'appointment_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Yeni Randevu
+            </a>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Tarih/Saat</th>
+                    <th>Hasta</th>
+                    <th>Doktor</th>
+                    <th>Tür</th>
+                    <th>Durum</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                <tr>
+                    <td>#{{ appointment.id }}</td>
+                    <td>
+                        <div>{{ appointment.date|date:"d.m.Y" }}</div>
+                        <small style="color: var(--gray-dark);">{{ appointment.start_time|date:"H:i" }} - {{ appointment.end_time|date:"H:i" }}</small>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center;">
+                            <div class="patient-avatar" style="width: 32px; height: 32px; margin-right: 10px;">
+                                {{ appointment.patient.first_name.0 }}{{ appointment.patient.last_name.0 }}
+                            </div>
+                            <div>
+                                <div>{{ appointment.patient.get_full_name }}</div>
+                                <small style="color: var(--gray-dark);">{{ appointment.patient.phone }}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>Dr. {{ appointment.doctor.get_full_name }}</td>
+                    <td>{{ appointment.get_appointment_type_display }}</td>
+                    <td>
+                        <span class="appointment-status status-{{ appointment.status|lower }}">
+                            {{ appointment.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 5px;">
+                            <a href="{% url 'appointment_detail' appointment.id %}" class="action-btn" title="Görüntüle">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{% url 'appointment_update' appointment.id %}" class="action-btn" title="Düzenle">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'appointment_delete' appointment.id %}" class="action-btn" title="Sil">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">Randevu bulunamadı.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    {% if appointments.has_other_pages %}
+    <div class="pagination">
+        {% if appointments.has_previous %}
+        <div class="page-item">
+            <a class="page-link" href="?page=1{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date %}&date={{ request.GET.date }}{% endif %}">
+                <i class="fas fa-angle-double-left"></i>
+            </a>
+        </div>
+        <div class="page-item">
+            <a class="page-link" href="?page={{ appointments.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date %}&date={{ request.GET.date }}{% endif %}">
+                <i class="fas fa-angle-left"></i>
+            </a>
+        </div>
+        {% endif %}
+        
+        {% for num in appointments.paginator.page_range %}
+        {% if appointments.number == num %}
+        <div class="page-item active">
+            <span class="page-link">{{ num }}</span>
+        </div>
+        {% elif num > appointments.number|add:'-3' and num < appointments.number|add:'3' %}
+        <div class="page-item">
+            <a class="page-link" href="?page={{ num }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date %}&date={{ request.GET.date }}{% endif %}">
+                {{ num }}
+            </a>
+        </div>
+        {% endif %}
+        {% endfor %}
+        
+        {% if appointments.has_next %}
+        <div class="page-item">
+            <a class="page-link" href="?page={{ appointments.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date %}&date={{ request.GET.date }}{% endif %}">
+                <i class="fas fa-angle-right"></i>
+            </a>
+        </div>
+        <div class="page-item">
+            <a class="page-link" href="?page={{ appointments.paginator.num_pages }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date %}&date={{ request.GET.date }}{% endif %}">
+                <i class="fas fa-angle-double-right"></i>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

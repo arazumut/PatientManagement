@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare - Klinik Yönetim Sistemi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --gray-dark: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: white;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar-collapsed {
+            transform: translateX(-85%);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background-color: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--gray-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            color: var(--primary);
+        }
+
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+
+        .menu-title {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-item {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--gray-dark);
+            text-decoration: none;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f1f5f9;
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .menu-item i {
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--dark);
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            color: var(--danger);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            transition: all 0.3s ease;
+        }
+
+        .main-collapsed {
+            margin-left: 42px;
+        }
+
+        .topbar {
+            padding: 1rem 2rem;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .search-bar {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .notification-btn, .message-btn {
+            position: relative;
+            background: none;
+            border: none;
+            color: var(--gray-dark);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .notification-btn:hover, .message-btn:hover {
+            color: var(--primary);
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 18px;
+            height: 18px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            padding: 2rem;
+        }
+
+        .welcome-section {
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-subtitle {
+            color: var(--gray-dark);
+            font-size: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .stat-card.appointments::after {
+            background-color: var(--primary);
+        }
+
+        .stat-card.patients::after {
+            background-color: var(--secondary);
+        }
+
+        .stat-card.doctors::after {
+            background-color: var(--info);
+        }
+
+        .stat-card.revenue::after {
+            background-color: var(--warning);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-card.appointments .stat-icon {
+            background-color: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+        }
+
+        .stat-card.patients .stat-icon {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--secondary);
+        }
+
+        .stat-card.doctors .stat-icon {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .stat-card.revenue .stat-icon {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            color: var(--gray-dark);
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 0.25rem 0;
+        }
+
+        .stat-change {
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: var(--secondary);
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        /* Recent Activity Section */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            .activity-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .appointments-card, .patients-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .appointments-header, .patients-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .view-all {
+            color: var(--primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .view-all:hover {
+            text-decoration: underline;
+        }
+
+        .appointment-list {
+            list-style: none;
+        }
+
+        .appointment-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+            animation: slideIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .appointment-item:nth-child(1) { animation-delay: 0.1s; }
+        .appointment-item:nth-child(2) { animation-delay: 0.2s; }
+        .appointment-item:nth-child(3) { animation-delay: 0.3s; }
+        .appointment-item:nth-child(4) { animation-delay: 0.4s; }
+        .appointment-item:nth-child(5) { animation-delay: 0.5s; }
+
+        .appointment-item:last-child {
+            border-bottom: none;
+        }
+
+        .appointment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: var(--dark);
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .appointment-info {
+            flex: 1;
+        }
+
+        .appointment-patient {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .appointment-time {
+            font-size: 0.875rem;
+            color: var(--gray-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .appointment-time i {
+            color: var(--primary);
+            font-size: 0.75rem;
+        }
+
+        .appointment-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-confirmed {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--secondary);
+        }
+
+        .status-pending {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-cancelled {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        /* Patients Card */
+        .patients-list {
+            list-style: none;
+        }
+
+        .patient-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .patient-item:last-child {
+            border-bottom: none;
+        }
+
+        .patient-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: var(--dark);
+            font-weight: 600;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .patient-avatar.online::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            background-color: var(--secondary);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .patient-info {
+            flex: 1;
+        }
+
+        .patient-name {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .patient-id {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .patient-action {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .patient-action:hover {
+            color: var(--primary);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .search-bar {
+                width: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                width: 200px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .topbar {
+                padding: 1rem;
+            }
+            
+            .search-bar {
+                display: none;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-hospital"></i>
+                </div>
+                <span class="logo-text">MediCare</span>
+            </div>
+            <button class="toggle-btn" id="toggle-sidebar">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-title">Ana Menü</div>
+            <a href="#" class="menu-item active">
+                <i class="fas fa-home"></i>
+                <span>Anasayfa</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-calendar-check"></i>
+                <span>Randevular</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-user-injured"></i>
+                <span>Hastalar</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-user-md"></i>
+                <span>Doktorlar</span>
+            </a>
+            
+            <div class="menu-title">Yönetim</div>
+            <a href="#" class="menu-item">
+                <i class="fas fa-pills"></i>
+                <span>İlaçlar</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-file-medical"></i>
+                <span>Raporlar</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Analizler</span>
+            </a>
+            
+            <div class="menu-title">Ayarlar</div>
+            <a href="#" class="menu-item">
+                <i class="fas fa-cog"></i>
+                <span>Sistem Ayarları</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-users-cog"></i>
+                <span>Kullanıcılar</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">AD</div>
+                <div class="user-info">
+                    <div class="user-name">Ahmet Demir</div>
+                    <div class="user-role">Yönetici</div>
+                </div>
+                <button class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Hasta, doktor veya randevu ara...">
+            </div>
+            
+            <div class="topbar-actions">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+                <button class="message-btn">
+                    <i class="fas fa-envelope"></i>
+                    <span class="badge">5</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <div class="welcome-section">
+                <h1 class="welcome-title">Hoş Geldiniz, Ahmet Bey</h1>
+                <p class="welcome-subtitle">Bugünkü klinik aktivitelerinizin özeti aşağıda yer almaktadır.</p>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card appointments">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-title">Bugünkü Randevular</div>
+                            <div class="stat-value">24</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>%12 geçen haftaya göre</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card patients">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-title">Toplam Hasta</div>
+                            <div class="stat-value">1,248</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>%8 geçen aya göre</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-user-injured"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card doctors">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-title">Aktif Doktor</div>
+                            <div class="stat-value">18</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>%5 geçen aya göre</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card revenue">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-title">Bu Ay Gelir</div>
+                            <div class="stat-value">₺86,450</div>
+                            <div class="stat-change negative">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>%3 geçen aya göre</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activity Section -->
+            <div class="activity-section">
+                <h2 class="section-title">
+                    <i class="fas fa-list"></i>
+                    <span>Yaklaşan Randevular</span>
+                </h2>
+                
+                <div class="activity-grid">
+                    <div class="appointments-card">
+                        <div class="appointments-header">
+                            <h3>Bugünkü Randevular</h3>
+                            <a href="#" class="view-all">Tümünü Görüntüle</a>
+                        </div>
+                        
+                        <ul class="appointment-list">
+                            <li class="appointment-item">
+                                <div class="appointment-avatar">MA</div>
+                                <div class="appointment-info">
+                                    <div class="appointment-patient">Mehmet Ali</div>
+                                    <div class="appointment-time">
+                                        <i class="fas fa-clock"></i>
+                                        <span>10:30 - 11:00</span>
+                                    </div>
+                                </div>
+                                <div class="appointment-status status-confirmed">Onaylandı</div>
+                            </li>
+                            
+                            <li class="appointment-item">
+                                <div class="appointment-avatar">AY</div>
+                                <div class="appointment-info">
+                                    <div class="appointment-patient">Ayşe Yılmaz</div>
+                                    <div class="appointment-time">
+                                        <i class="fas fa-clock"></i>
+                                        <span>11:15 - 11:45</span>
+                                    </div>
+                                </div>
+                                <div class="appointment-status status-confirmed">Onaylandı</div>
+                            </li>
+                            
+                            <li class="appointment-item">
+                                <div class="appointment-avatar">EK</div>
+                                <div class="appointment-info">
+                                    <div class="appointment-patient">Elif Kaya</div>
+                                    <div class="appointment-time">
+                                        <i class="fas fa-clock"></i>
+                                        <span>13:30 - 14:00</span>
+                                    </div>
+                                </div>
+                                <div class="appointment-status status-pending">Beklemede</div>
+                            </li>
+                            
+                            <li class="appointment-item">
+                                <div class="appointment-avatar">CD</div>
+                                <div class="appointment-info">
+                                    <div class="appointment-patient">Can Demir</div>
+                                    <div class="appointment-time">
+                                        <i class="fas fa-clock"></i>
+                                        <span>14:15 - 14:45</span>
+                                    </div>
+                                </div>
+                                <div class="appointment-status status-cancelled">İptal Edildi</div>
+                            </li>
+                            
+                            <li class="appointment-item">
+                                <div class="appointment-avatar">SK</div>
+                                <div class="appointment-info">
+                                    <div class="appointment-patient">Sema Koç</div>
+                                    <div class="appointment-time">
+                                        <i class="fas fa-clock"></i>
+                                        <span>15:00 - 15:30</span>
+                                    </div>
+                                </div>
+                                <div class="appointment-status status-confirmed">Onaylandı</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="patients-card">
+                        <div class="patients-header">
+                            <h3>Son Eklenen Hastalar</h3>
+                            <a href="#" class="view-all">Tümünü Görüntüle</a>
+                        </div>
+                        
+                        <ul class="patients-list">
+                            <li class="patient-item">
+                                <div class="patient-avatar online">TA</div>
+                                <div class="patient-info">
+                                    <div class="patient-name">Tolga Arslan</div>
+                                    <div class="patient-id">Hasta ID: #54879</div>
+                                </div>
+                                <button class="patient-action">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </li>
+                            
+                            <li class="patient-item">
+                                <div class="patient-avatar">NG</div>
+                                <div class="patient-info">
+                                    <div class="patient-name">Nur Gül</div>
+                                    <div class="patient-id">Hasta ID: #54878</div>
+                                </div>
+                                <button class="patient-action">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </li>
+                            
+                            <li class="patient-item">
+                                <div class="patient-avatar online">BK</div>
+                                <div class="patient-info">
+                                    <div class="patient-name">Burak Korkmaz</div>
+                                    <div class="patient-id">Hasta ID: #54877</div>
+                                </div>
+                                <button class="patient-action">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </li>
+                            
+                            <li class="patient-item">
+                                <div class="patient-avatar">DY</div>
+                                <div class="patient-info">
+                                    <div class="patient-name">Deniz Yıldız</div>
+                                    <div class="patient-id">Hasta ID: #54876</div>
+                                </div>
+                                <button class="patient-action">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Sidebar
+        const toggleSidebarBtn = document.getElementById('toggle-sidebar');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.getElementById('main-content');
+        
+        toggleSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('sidebar-collapsed');
+            mainContent.classList.toggle('main-collapsed');
+            
+            // Change icon based on state
+            if (sidebar.classList.contains('sidebar-collapsed')) {
+                toggleSidebarBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            } else {
+                toggleSidebarBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            }
+        });
+        
+        // Responsive sidebar toggle for mobile
+        function handleResponsiveSidebar() {
+            if (window.innerWidth <= 992) {
+                sidebar.classList.remove('sidebar-collapsed');
+                mainContent.classList.remove('main-collapsed');
+            }
+        }
+        
+        // Initialize on load
+        window.addEventListener('load', handleResponsiveSidebar);
+        window.addEventListener('resize', handleResponsiveSidebar);
+        
+        // Animate stats cards on scroll
+        const animateOnScroll = () => {
+            const statCards = document.querySelectorAll('.stat-card');
+            
+            statCards.forEach((card, index) => {
+                const cardPosition = card.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if (cardPosition < screenPosition) {
+                    card.style.animation = `fadeIn 0.5s ease forwards ${index * 0.1}s`;
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+    </script>
+</body>
+</html>

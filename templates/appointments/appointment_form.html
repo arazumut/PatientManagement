@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Randevu Düzenle{% else %}Yeni Randevu Ekle{% endif %} - MediCare{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1 class="welcome-title">{% if form.instance.pk %}Randevu Düzenle{% else %}Yeni Randevu Ekle{% endif %}</h1>
+    <p class="welcome-subtitle">{% if form.instance.pk %}Randevu bilgilerini güncelleyebilirsiniz.{% else %}Yeni bir randevu kaydı oluşturun.{% endif %}</p>
+</div>
+
+<div class="form-card">
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert" style="background-color: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <p><strong>Lütfen aşağıdaki hataları düzeltin:</strong></p>
+            <ul>
+                {% for field in form %}
+                    {% if field.errors %}
+                    <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_patient" class="form-label">Hasta *</label>
+                    {{ form.patient }}
+                    {% if form.patient.help_text %}
+                    <div class="form-text">{{ form.patient.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_doctor" class="form-label">Doktor *</label>
+                    {{ form.doctor }}
+                    {% if form.doctor.help_text %}
+                    <div class="form-text">{{ form.doctor.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="id_date" class="form-label">Tarih *</label>
+                    {{ form.date }}
+                    {% if form.date.help_text %}
+                    <div class="form-text">{{ form.date.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="id_start_time" class="form-label">Başlangıç Saati *</label>
+                    {{ form.start_time }}
+                    {% if form.start_time.help_text %}
+                    <div class="form-text">{{ form.start_time.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="id_end_time" class="form-label">Bitiş Saati *</label>
+                    {{ form.end_time }}
+                    {% if form.end_time.help_text %}
+                    <div class="form-text">{{ form.end_time.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_appointment_type" class="form-label">Randevu Türü *</label>
+                    {{ form.appointment_type }}
+                    {% if form.appointment_type.help_text %}
+                    <div class="form-text">{{ form.appointment_type.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_status" class="form-label">Durum *</label>
+                    {{ form.status }}
+                    {% if form.status.help_text %}
+                    <div class="form-text">{{ form.status.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="id_notes" class="form-label">Notlar</label>
+            {{ form.notes }}
+            {% if form.notes.help_text %}
+            <div class="form-text">{{ form.notes.help_text }}</div>
+            {% endif %}
+        </div>
+        
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-primary">
+                {% if form.instance.pk %}Güncelle{% else %}Kaydet{% endif %}
+            </button>
+            <a href="{% url 'appointment_list' %}" class="btn btn-outline">İptal</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Form validation and formatting
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set input classes
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.classList.add('form-control');
+        });
+        
+        // Time inputs formatting
+        const timeInputs = document.querySelectorAll('input[type="time"]');
+        timeInputs.forEach(input => {
+            if (!input.value) {
+                input.value = '09:00';
+            }
+        });
+        
+        // Date input default value (today)
+        const dateInput = document.getElementById('id_date');
+        if (!dateInput.value) {
+            const today = new Date();
+            const year = today.getFullYear();
+            let month = today.getMonth() + 1;
+            let day = today.getDate();
+            
+            month = month < 10 ? '0' + month : month;
+            day = day < 10 ? '0' + day : day;
+            
+            dateInput.value = `${year}-${month}-${day}`;
+        }
+    });
+</script>
+{% endblock %} 

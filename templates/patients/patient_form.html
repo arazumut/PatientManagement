@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Hastayı Düzenle{% else %}Yeni Hasta Ekle{% endif %} - MediCare{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1 class="welcome-title">{% if form.instance.pk %}Hastayı Düzenle{% else %}Yeni Hasta Ekle{% endif %}</h1>
+    <p class="welcome-subtitle">{% if form.instance.pk %}Hasta bilgilerini güncelleyebilirsiniz.{% else %}Yeni bir hasta kaydı oluşturun.{% endif %}</p>
+</div>
+
+<div class="form-card">
+    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            <p><strong>Lütfen aşağıdaki hataları düzeltin:</strong></p>
+            <ul>
+                {% for field in form %}
+                    {% if field.errors %}
+                    <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_first_name" class="form-label">Ad *</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.help_text %}
+                    <div class="form-text">{{ form.first_name.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_last_name" class="form-label">Soyad *</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.help_text %}
+                    <div class="form-text">{{ form.last_name.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_email" class="form-label">E-posta</label>
+                    {{ form.email }}
+                    {% if form.email.help_text %}
+                    <div class="form-text">{{ form.email.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_phone" class="form-label">Telefon *</label>
+                    {{ form.phone }}
+                    {% if form.phone.help_text %}
+                    <div class="form-text">{{ form.phone.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_birth_date" class="form-label">Doğum Tarihi</label>
+                    {{ form.birth_date }}
+                    {% if form.birth_date.help_text %}
+                    <div class="form-text">{{ form.birth_date.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_gender" class="form-label">Cinsiyet</label>
+                    {{ form.gender }}
+                    {% if form.gender.help_text %}
+                    <div class="form-text">{{ form.gender.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="id_address" class="form-label">Adres</label>
+            {{ form.address }}
+            {% if form.address.help_text %}
+            <div class="form-text">{{ form.address.help_text }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_blood_group" class="form-label">Kan Grubu</label>
+                    {{ form.blood_group }}
+                    {% if form.blood_group.help_text %}
+                    <div class="form-text">{{ form.blood_group.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_is_active" class="form-label">Durum</label>
+                    <div>
+                        {{ form.is_active }}
+                        <label for="id_is_active" style="margin-left: 5px;">Aktif</label>
+                    </div>
+                    {% if form.is_active.help_text %}
+                    <div class="form-text">{{ form.is_active.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="id_notes" class="form-label">Notlar</label>
+            {{ form.notes }}
+            {% if form.notes.help_text %}
+            <div class="form-text">{{ form.notes.help_text }}</div>
+            {% endif %}
+        </div>
+        
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-primary">
+                {% if form.instance.pk %}Güncelle{% else %}Kaydet{% endif %}
+            </button>
+            <a href="{% url 'patient_list' %}" class="btn btn-outline">İptal</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Form validation
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set input classes
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.classList.add('form-control');
+        });
+    });
+</script>
+{% endblock %} 

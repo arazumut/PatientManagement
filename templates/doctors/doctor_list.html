@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Doktorlar - MediCare{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1 class="welcome-title">Doktor Listesi</h1>
+    <p class="welcome-subtitle">Sistemde kayıtlı tüm doktorları görüntüleyebilir, arayabilir ve yönetebilirsiniz.</p>
+</div>
+
+<div class="table-card">
+    <div class="table-header">
+        <h2 class="table-title">Doktorlar</h2>
+        
+        <div class="table-actions">
+            <form method="get" action="{% url 'doctor_list' %}" class="d-flex">
+                <div class="search-bar" style="width: 300px;">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="q" placeholder="Doktor ara..." value="{{ request.GET.q }}">
+                </div>
+            </form>
+            <a href="{% url 'doctor_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Yeni Doktor
+            </a>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Doktor Adı</th>
+                    <th>Uzmanlık</th>
+                    <th>Telefon</th>
+                    <th>E-posta</th>
+                    <th>Durum</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doctor in doctors %}
+                <tr>
+                    <td>#{{ doctor.id }}</td>
+                    <td>
+                        <div style="display: flex; align-items: center;">
+                            <div class="patient-avatar" style="width: 36px; height: 36px; margin-right: 10px; background-color: rgba(59, 130, 246, 0.1); color: var(--info);">
+                                {{ doctor.first_name.0 }}{{ doctor.last_name.0 }}
+                            </div>
+                            <div>
+                                Dr. {{ doctor.get_full_name }}
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ doctor.specialization }}</td>
+                    <td>{{ doctor.phone }}</td>
+                    <td>{{ doctor.email }}</td>
+                    <td>
+                        <span class="appointment-status {% if doctor.is_active %}status-confirmed{% else %}status-cancelled{% endif %}">
+                            {% if doctor.is_active %}Aktif{% else %}Pasif{% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 5px;">
+                            <a href="{% url 'doctor_detail' doctor.id %}" class="action-btn" title="Görüntüle">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{% url 'doctor_update' doctor.id %}" class="action-btn" title="Düzenle">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'doctor_delete' doctor.id %}" class="action-btn" title="Sil">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">Henüz doktor kaydı bulunmuyor.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    {% if doctors.has_other_pages %}
+    <div class="pagination">
+        {% if doctors.has_previous %}
+        <div class="page-item">
+            <a class="page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                <i class="fas fa-angle-double-left"></i>
+            </a>
+        </div>
+        <div class="page-item">
+            <a class="page-link" href="?page={{ doctors.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                <i class="fas fa-angle-left"></i>
+            </a>
+        </div>
+        {% endif %}
+        
+        {% for num in doctors.paginator.page_range %}
+        {% if doctors.number == num %}
+        <div class="page-item active">
+            <span class="page-link">{{ num }}</span>
+        </div>
+        {% elif num > doctors.number|add:'-3' and num < doctors.number|add:'3' %}
+        <div class="page-item">
+            <a class="page-link" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                {{ num }}
+            </a>
+        </div>
+        {% endif %}
+        {% endfor %}
+        
+        {% if doctors.has_next %}
+        <div class="page-item">
+            <a class="page-link" href="?page={{ doctors.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                <i class="fas fa-angle-right"></i>
+            </a>
+        </div>
+        <div class="page-item">
+            <a class="page-link" href="?page={{ doctors.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                <i class="fas fa-angle-double-right"></i>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

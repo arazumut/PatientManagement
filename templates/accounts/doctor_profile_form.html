@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Doktor Profili Oluştur{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Doktor Profili Oluştur</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> Lütfen doktor profil bilgilerinizi eksiksiz doldurunuz. Bu bilgiler hasta randevuları ve kayıtları için gereklidir.
+                    </div>
+                    
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-3">
+                            <label for="id_specialty" class="form-label">Uzmanlık Alanı</label>
+                            {{ form.specialty }}
+                            {% if form.specialty.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.specialty.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="id_license_number" class="form-label">Lisans/Diploma Numarası</label>
+                            {{ form.license_number }}
+                            {% if form.license_number.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.license_number.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="id_experience_years" class="form-label">Deneyim (Yıl)</label>
+                            {{ form.experience_years }}
+                            {% if form.experience_years.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.experience_years.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="id_about" class="form-label">Hakkınızda (Opsiyonel)</label>
+                            {{ form.about }}
+                            <div class="form-text text-muted">Hastaların göreceği şekilde kendinizi tanıtın.</div>
+                            {% if form.about.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.about.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'dashboard' %}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-times me-1"></i> İptal
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check me-1"></i> Profil Oluştur
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

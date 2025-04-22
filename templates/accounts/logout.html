@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çıkış Yapılıyor - MediCare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f1f5f9;
+            height: 100vh;
+        }
+        
+        .logout-container {
+            max-width: 400px;
+            width: 100%;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background-color: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 0.75rem;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .logout-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+        
+        .logout-message {
+            color: var(--gray-dark);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+        
+        .logout-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .return-btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+            text-decoration: none;
+        }
+        
+        .return-btn:hover {
+            background-color: var(--primary-light);
+            box-shadow: 0 6px 10px -1px rgba(99, 102, 241, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .countdown {
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-dark);
+        }
+        
+        .countdown-timer {
+            font-weight: 600;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="logout-container">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-hospital"></i>
+            </div>
+            <div class="logo-text">MediCare</div>
+        </div>
+        
+        <div class="logout-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        
+        <h1 class="logout-title">Çıkış Yapıldı</h1>
+        <p class="logout-message">Hesabınızdan başarıyla çıkış yaptınız. Tekrar giriş yapmak için aşağıdaki butona tıklayabilirsiniz.</p>
+        
+        <a href="{% url 'login' %}" class="return-btn">Giriş Sayfasına Dön</a>
+        
+        <div class="countdown">
+            <span id="countdown-text"><span class="countdown-timer">5</span> saniye içinde giriş sayfasına yönlendirileceksiniz.</span>
+        </div>
+    </div>
+    
+    <script>
+        // Otomatik yönlendirme için sayaç
+        document.addEventListener('DOMContentLoaded', function() {
+            let countdownElement = document.querySelector('.countdown-timer');
+            let seconds = 5;
+            
+            const countdownInterval = setInterval(function() {
+                seconds--;
+                countdownElement.textContent = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                    window.location.href = "{% url 'login' %}";
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MediCare - Klinik Yönetim Sistemi{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-hospital"></i>
+                </div>
+                <span class="logo-text">MediCare</span>
+            </div>
+            <button class="toggle-btn" id="toggle-sidebar">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-title">Ana Menü</div>
+            <a href="{% url 'dashboard' %}" class="menu-item {% if request.path == '/' %}active{% endif %}">
+                <i class="fas fa-home"></i>
+                <span>Anasayfa</span>
+            </a>
+            <a href="{% url 'appointment_list' %}" class="menu-item {% if '/randevular/' in request.path %}active{% endif %}">
+                <i class="fas fa-calendar-check"></i>
+                <span>Randevular</span>
+            </a>
+            <a href="{% url 'patient_list' %}" class="menu-item {% if '/hastalar/' in request.path %}active{% endif %}">
+                <i class="fas fa-user-injured"></i>
+                <span>Hastalar</span>
+            </a>
+            <a href="{% url 'doctor_list' %}" class="menu-item {% if '/doktorlar/' in request.path %}active{% endif %}">
+                <i class="fas fa-user-md"></i>
+                <span>Doktorlar</span>
+            </a>
+            
+            <div class="menu-title">Yönetim</div>
+            <a href="#" class="menu-item">
+                <i class="fas fa-pills"></i>
+                <span>İlaçlar</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-file-medical"></i>
+                <span>Raporlar</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Analizler</span>
+            </a>
+            
+            <div class="menu-title">Ayarlar</div>
+            <a href="#" class="menu-item">
+                <i class="fas fa-cog"></i>
+                <span>Sistem Ayarları</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-users-cog"></i>
+                <span>Kullanıcılar</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    {% if request.user.first_name and request.user.last_name %}
+                        {{ request.user.first_name.0 }}{{ request.user.last_name.0 }}
+                    {% else %}
+                        {{ request.user.username.0 }}
+                    {% endif %}
+                </div>
+                <div class="user-info">
+                    <div class="user-name">
+                        {% if request.user.get_full_name %}
+                            {{ request.user.get_full_name }}
+                        {% else %}
+                            {{ request.user.username }}
+                        {% endif %}
+                    </div>
+                    <div class="user-role">
+                        {% if request.user.profile.user_type %}
+                            {% if request.user.profile.user_type == 'admin' %}
+                                Yönetici
+                            {% elif request.user.profile.user_type == 'doctor' %}
+                                Doktor
+                            {% elif request.user.profile.user_type == 'patient' %}
+                                Hasta
+                            {% else %}
+                                {{ request.user.profile.user_type }}
+                            {% endif %}
+                        {% else %}
+                            Kullanıcı
+                        {% endif %}
+                    </div>
+                </div>
+                <a href="{% url 'logout' %}" class="logout-btn" title="Çıkış Yap">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Hasta, doktor veya randevu ara...">
+            </div>
+            
+            <div class="topbar-actions">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+                <button class="message-btn">
+                    <i class="fas fa-envelope"></i>
+                    <span class="badge">5</span>
+                </button>
+                <a href="{% url 'logout' %}" class="logout-topbar-btn" title="Çıkış Yap">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="dashboard-content">
+            {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-warning{% elif message.tags == 'info' %}alert-info{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            {% block content %}
+            <!-- Sayfa içeriği buraya gelecek -->
+            {% endblock %}
+        </div>
+    </div>
+
+    <!-- Core JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 
