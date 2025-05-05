@@ -15,64 +15,70 @@
             background-color: #f1f5f9;
             min-height: 100vh;
             padding: 2rem 0;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         .register-container {
-            max-width: 500px;
+            max-width: 600px;
             width: 100%;
-            padding: 2rem;
+            padding: 2.5rem;
             background-color: white;
             border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
             margin: 2rem auto;
+            transition: transform 0.3s ease;
+            box-sizing: border-box;
         }
         
         .register-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
         
         .logo {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
         
         .logo-icon {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             background-color: var(--primary);
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             margin-right: 0.75rem;
+            box-shadow: 0 4px 10px -2px rgba(79, 70, 229, 0.3);
         }
         
         .logo-text {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
             color: var(--dark);
+            letter-spacing: -0.5px;
         }
         
         .register-title {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
             color: var(--dark);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
         }
         
         .register-subtitle {
             color: var(--gray-dark);
-            font-size: 0.875rem;
+            font-size: 0.95rem;
         }
         
         .register-btn {
             width: 100%;
-            padding: 0.8rem;
+            padding: 1rem;
             border: none;
             border-radius: 10px;
             background-color: var(--primary);
@@ -82,18 +88,30 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .register-btn i {
+            margin-right: 8px;
         }
         
         .register-btn:hover {
-            background-color: var(--primary-light);
-            box-shadow: 0 6px 10px -1px rgba(99, 102, 241, 0.3);
-            transform: translateY(-1px);
+            background-color: var(--primary-dark);
+            box-shadow: 0 6px 15px -3px rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .register-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
         }
         
         .register-footer {
-            margin-top: 2rem;
+            margin-top: 2.5rem;
             text-align: center;
-            font-size: 0.875rem;
+            font-size: 0.95rem;
             color: var(--gray-dark);
         }
         
@@ -101,54 +119,197 @@
             color: var(--primary);
             text-decoration: none;
             font-weight: 500;
+            transition: all 0.2s ease;
         }
         
         .register-footer a:hover {
             text-decoration: underline;
+            color: var(--primary-dark);
         }
         
         .error-message {
             background-color: rgba(239, 68, 68, 0.1);
             color: var(--danger);
-            padding: 0.75rem;
+            padding: 1rem;
             border-radius: 8px;
-            margin-bottom: 1.5rem;
-            font-size: 0.875rem;
-            border-left: 3px solid var(--danger);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            border-left: 4px solid var(--danger);
             display: flex;
             align-items: center;
         }
         
         .error-message:before {
             content: "⚠️";
-            margin-right: 0.5rem;
+            margin-right: 0.75rem;
             font-size: 1.2rem;
         }
-
+        
         .form-row {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            width: 100%;
         }
-
-        .form-row .form-group {
-            flex: 1;
-            margin-bottom: 0;
+                
+        .form-group {
+            margin-bottom: 1.75rem;
+            width: 100%;
         }
-
-        .helptext {
-            font-size: 0.75rem;
-            color: var(--gray-dark);
-            margin-top: 0.25rem;
+        
+        .form-label {
             display: block;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--secondary-color);
+            font-size: 0.95rem;
         }
-
+        
+        .input-with-icon {
+            position: relative;
+            width: 100%;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            transition: color 0.3s ease;
+        }
+        
+        .input-with-icon input,
+        .input-with-icon select {
+            width: 100%;
+            padding: 0.9rem 1rem 0.9rem 3rem;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #fcfcfc;
+            box-sizing: border-box;
+        }
+        
+        .input-with-icon input:focus,
+        .input-with-icon select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+            outline: none;
+            background-color: #fff;
+        }
+        
+        .input-with-icon input:focus + i,
+        .input-with-icon select:focus + i {
+            color: var(--primary);
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+        
+        .form-check-input {
+            margin-right: 0.75rem;
+            margin-top: 0.25rem;
+            width: 1.1rem;
+            height: 1.1rem;
+            cursor: pointer;
+        }
+        
+        .form-check-label {
+            font-size: 0.95rem;
+            color: var(--gray-dark);
+            line-height: 1.5;
+        }
+        
+        .form-check-label a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .form-check-label a:hover {
+            text-decoration: underline;
+            color: var(--primary-dark);
+        }
+        
         .errorlist {
             color: var(--danger);
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             list-style: none;
             padding: 0;
-            margin: 0.25rem 0 0 0;
+            margin: 0.5rem 0 0 0;
+        }
+        
+        .success-message {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            border-left: 4px solid var(--success);
+            display: flex;
+            align-items: center;
+        }
+        
+        .success-message:before {
+            content: "✅";
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+        
+        .back-home {
+            color: var(--gray-dark);
+            transition: color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .back-home:hover {
+            color: var(--primary-dark);
+        }
+        
+        .register-form {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            
+            .register-container {
+                max-width: 90%;
+                padding: 1.5rem;
+                margin: 1rem auto;
+            }
+            
+            .logo-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.5rem;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            
+            .register-title {
+                font-size: 1.5rem;
+            }
+            
+            .input-with-icon input,
+            .input-with-icon select {
+                padding: 0.8rem 1rem 0.8rem 3rem;
+                font-size: 0.95rem;
+            }
         }
     </style>
 </head>
@@ -162,18 +323,18 @@
                 <div class="logo-text">MediCare</div>
             </div>
             <h1 class="register-title">Kayıt Ol</h1>
-            <p class="register-subtitle">Hasta yönetim sistemimize hoş geldiniz</p>
+            <p class="register-subtitle">MediCare'e hoş geldiniz! Hesap oluşturmak için aşağıdaki formu doldurun.</p>
         </div>
         
         {% if messages %}
         {% for message in messages %}
-        <div class="error-message">
+        <div class="{% if message.tags == 'success' %}success-message{% else %}error-message{% endif %}">
             {{ message }}
         </div>
         {% endfor %}
         {% endif %}
         
-        <form method="post" action="{% url 'register' %}">
+        <form method="post" class="register-form">
             {% csrf_token %}
             
             <div class="form-row">
@@ -207,7 +368,7 @@
             <div class="form-group input-with-icon">
                 <label for="{{ form.username.id_for_label }}" class="form-label">Kullanıcı Adı</label>
                 {{ form.username }}
-                <i class="fas fa-at"></i>
+                <i class="fas fa-id-badge"></i>
                 {% if form.username.errors %}
                 <ul class="errorlist">
                     {% for error in form.username.errors %}
@@ -230,9 +391,38 @@
                 {% endif %}
             </div>
             
-            <div class="form-group">
-                <label for="{{ form.user_type.id_for_label }}" class="form-label">Hesap Tipi</label>
+            <div class="form-row">
+                <div class="form-group input-with-icon">
+                    <label for="{{ form.password1.id_for_label }}" class="form-label">Parola</label>
+                    {{ form.password1 }}
+                    <i class="fas fa-lock"></i>
+                    {% if form.password1.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.password1.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group input-with-icon">
+                    <label for="{{ form.password2.id_for_label }}" class="form-label">Parola Tekrarı</label>
+                    {{ form.password2 }}
+                    <i class="fas fa-lock"></i>
+                    {% if form.password2.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.password2.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group input-with-icon">
+                <label for="{{ form.user_type.id_for_label }}" class="form-label">Hesap Türü</label>
                 {{ form.user_type }}
+                <i class="fas fa-user-tag"></i>
                 {% if form.user_type.errors %}
                 <ul class="errorlist">
                     {% for error in form.user_type.errors %}
@@ -242,41 +432,32 @@
                 {% endif %}
             </div>
             
-            <div class="form-group input-with-icon">
-                <label for="{{ form.password1.id_for_label }}" class="form-label">Şifre</label>
-                {{ form.password1 }}
-                <i class="fas fa-lock"></i>
-                {% if form.password1.errors %}
-                <ul class="errorlist">
-                    {% for error in form.password1.errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                {% if form.password1.help_text %}
-                <span class="helptext">{{ form.password1.help_text }}</span>
-                {% endif %}
+            {% if form.non_field_errors %}
+            <div class="error-message">
+                {% for error in form.non_field_errors %}
+                {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="terms" required>
+                <label class="form-check-label" for="terms">
+                    <span>MediCare'in <a href="#" target="_blank">Kullanım Şartları</a> ve <a href="#" target="_blank">Gizlilik Politikası</a>'nı okudum ve kabul ediyorum.</span>
+                </label>
             </div>
             
-            <div class="form-group input-with-icon">
-                <label for="{{ form.password2.id_for_label }}" class="form-label">Şifre (Tekrar)</label>
-                {{ form.password2 }}
-                <i class="fas fa-lock"></i>
-                {% if form.password2.errors %}
-                <ul class="errorlist">
-                    {% for error in form.password2.errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-            </div>
-            
-            <button type="submit" class="register-btn">Kayıt Ol</button>
+            <button type="submit" class="register-btn">
+                <i class="fas fa-user-plus"></i> Hesap Oluştur
+            </button>
         </form>
         
         <div class="register-footer">
-            <p>Zaten bir hesabınız var mı? <a href="{% url 'login' %}">Giriş yapın</a></p>
+            <p>Zaten bir hesabınız var mı? <a href="{% url 'login' %}">Giriş Yap</a></p>
+            <a href="{% url 'home' %}" class="back-home" style="display: block; margin-top: 1rem; text-align: center;">
+                <i class="fas fa-arrow-left"></i> Ana Sayfaya Dön
+            </a>
         </div>
     </div>
 </body>
-</html> 
+</html>
